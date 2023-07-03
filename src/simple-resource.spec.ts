@@ -1,5 +1,5 @@
 import "disposablestack/auto";
-import { assert } from "chai";
+import assert from "assert/strict";
 
 const openHandles = new Set<number>();
 
@@ -42,13 +42,13 @@ class SimpleResource {
 
 describe("SimpleResource", () => {
   it("works with using", () => {
-    assert.isEmpty(openHandles);
+    assert.equal(openHandles.size, 0);
 
     {
       using resource = new SimpleResource();
       assert.doesNotThrow(() => resource.handle);
     }
 
-    assert.isEmpty(openHandles);
+    assert.equal(openHandles.size, 0);
   });
 });
