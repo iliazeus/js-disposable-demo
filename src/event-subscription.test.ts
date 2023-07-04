@@ -1,18 +1,9 @@
-import "disposablestack/auto";
-import "source-map-support/register";
+import { subscribe } from "#package/event-subscription";
 
 import assert from "node:assert/strict";
 import { EventEmitter } from "node:events";
 import { describe, it } from "node:test";
 
-function subscribe(
-  obj: EventEmitter,
-  e: string,
-  fn: (...args: any[]) => void,
-): Disposable {
-  obj.on(e, fn);
-  return { [Symbol.dispose]: () => obj.off(e, fn) };
-}
 
 describe("event-subscription", () => {
   it("is disposed at scope exit", () => {

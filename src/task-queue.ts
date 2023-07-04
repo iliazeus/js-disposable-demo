@@ -1,14 +1,9 @@
 import "disposablestack/auto";
-import "source-map-support/register";
-
-import assert from "node:assert/strict";
 import { EventEmitter, once } from "node:events";
-import { describe, it } from "node:test";
-import { setTimeout as sleep } from "node:timers/promises";
 
-type Task = () => Promise<void>;
+export type Task = () => Promise<void>;
 
-class TaskQueue extends EventEmitter {
+export class TaskQueue extends EventEmitter {
   #concurrency: number;
   #tasks: Task[] = [];
   #runningTaskCount: number = 0;
@@ -47,31 +42,3 @@ class TaskQueue extends EventEmitter {
     }
   }
 }
-
-describe("task-queue", () => {
-  it("is disposed at scope exit", async () => {
-    let runningTaskCount = 0;
-    let maxRunningTaskCount = 0;
-
-    const task = async () => {
-      runningTaskCount += 1;
-      maxRunningTaskCount = Math.max(maxRunningTaskCount, runningTaskCount);
-
-      await sleep(100);
-
-      runningTaskCount -= 1;
-    };
-
-    {
-      await using queue = new TaskQueue({ concurrency: 2 });
-
-      queue.push(task);
-      queue.push(task);
-      queue.push(task);
-      queue.push(task);
-    }
-
-    assert.equal(runningTaskCount, 0);
-    assert.equal(maxRunningTaskCount, 2);
-  });
-});

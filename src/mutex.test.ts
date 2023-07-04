@@ -1,27 +1,8 @@
-import "disposablestack/auto";
-import "source-map-support/register";
+import { Mutex } from "#package/mutex";
 
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { setTimeout as sleep } from "node:timers/promises";
-
-class Mutex {
-  #promise: Promise<void> | null = null;
-
-  async acquire(): Promise<Disposable> {
-    while (this.#promise) await this.#promise;
-
-    let callback: () => void;
-    this.#promise = new Promise((cb) => callback = cb);
-
-    return {
-      [Symbol.dispose]: () => {
-        this.#promise = null;
-        callback!();
-      }
-    };
-  }
-}
 
 describe("mutex-guard", () => {
   it("is disposed at scope exit", async () => {
