@@ -1,18 +1,7 @@
-import { program } from "commander";
+import { parseArgs } from "node:util";
 
 // import { fetchCat } from "./fetch-cat-incorrect.js";
 import { fetchCat } from "./fetch-cat.js";
-
-program.name("fetch-cat");
-program.description("Fetch several remote resources, concatenate them, then write to a file");
-
-program
-  .arguments('<urls...>')
-  .requiredOption('-o --outPath <path>')
-  .option('-j --concurrency <number>', '', Number, 2)
-  .action(async (urls: string[], options: { outPath: string, concurrency: number }) => {
-    await fetchCat({ urls, ...options, onError: (err) => console.error(explain(err)) });
-  });
 
 const explain = (error: Error) => {
   let message = error.message;
@@ -24,4 +13,33 @@ const explain = (error: Error) => {
   return message;
 }
 
-await program.parseAsync();
+const args = parseArgs({
+  strict: true,
+  allowPositionals: true,
+  options: {
+    outPath: {
+      short: 'o',
+      type: 'string',
+    },
+    concurrency: {
+      short: 'j',
+      type: 'string',
+      default: '2',
+    },
+  },
+});
+
+if (!args.values.outPath) {
+  console.log('missing required option: -o (--outPath)');
+  process.exit(1);
+}
+
+await fetchCat({
+  urls: args.positionals,
+  outPath: args.values.outPath,
+  concurrency: Number(args.values.concurrency),
+  onError: (e) => {
+    console.error(explain(e));
+    process.exitCode = 1;
+  },
+});
