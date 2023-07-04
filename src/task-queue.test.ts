@@ -25,6 +25,8 @@ describe("task-queue", () => {
       queue.push(task);
       queue.push(task);
       queue.push(task);
+
+      // в конце области видимости ожидаем завершения всех задач в очереди
     }
 
     assert.equal(runningTaskCount, 0);

@@ -14,8 +14,15 @@ describe("event-subscription", () => {
     const fn = (e: number) => actualEvents.push(e);
 
     {
+      // инициализируем ресурс с помощью ключевого слова using
       using guard = subscribe(obj, "event", fn);
+
+      // ресурс живет до тех пор, пока мы не выйдем из области
+      // видимости переменной guard
       for (const e of expectedEvents) obj.emit("event", e);
+
+      // конец области видимости
+      // здесь выполняется guard[Symbol.dispose]()
     }
 
     obj.emit("event", 123);

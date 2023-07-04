@@ -4,6 +4,7 @@ import { EventEmitter, once } from "node:events";
 export type Task = () => Promise<void>;
 
 export class TaskQueue extends EventEmitter {
+  // сейчас это еще не совсем очевидно, но это поле - очень важная деталь
   readonly resources = new AsyncDisposableStack();
 
   #concurrency: number;

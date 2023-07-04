@@ -4,7 +4,10 @@
   "scripts": {
     "demo": "xargs npm start -- -o ./cat.html < ./urls.txt",
     "start": "tsc && node --max-old-space-size=8 ./dist/main.js",
-    "test": "tsc && node --test ./dist"
+    "test": "tsc && node --test ./dist",
+    
+    "start:incorrect": "tsc && node --max-old-space-size=8 ./dist/main-incorrect.js",
+    "demo:incorrect": "xargs npm run start:incorrect -- -o ./cat.html < ./urls.txt"
   },
   "engines": {
     "node": ">=18.16.0"

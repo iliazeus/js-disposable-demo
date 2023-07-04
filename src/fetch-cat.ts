@@ -15,11 +15,15 @@ export async function fetchCat(
 
   await using taskQueue = new TaskQueue({ concurrency });
 
+  // Поле taskQueue.resources имеет тип AsyncDisposableStack.
+  // Как часть контракта TaskQueue, оно освобождается в его dispose,
+  // причем только после завершения всех задач.
+
   const errorSubscription = subscribe(taskQueue, "error", onError);
-  taskQueue.resources.use(errorSubscription);
+  taskQueue.resources.use(errorSubscription); // связываем время жизни
 
   const outFile = await openFile(outPath, "w");
-  taskQueue.resources.use(outFile);
+  taskQueue.resources.use(outFile); // связываем время жизни
 
   const outFileMutex = new Mutex();
 
@@ -33,4 +37,9 @@ export async function fetchCat(
       }
     });
   }
+
+  // К этой области видимости из ресурсов привязан только сам taskQueue.
+  // При его освобождении сначала будут выполнены все задачи в очереди,
+  // а потом освобожден весь стек taskQueue.resources.
+  // Таким образом, файл будет корректно закрыт
 }

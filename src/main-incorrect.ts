@@ -1,6 +1,6 @@
 import { parseArgs } from "node:util";
 
-import { fetchCat } from "./fetch-cat.js";
+import { fetchCat } from "./fetch-cat-incorrect.js";
 
 const explain = (error: Error) => {
   let message = error.message;
