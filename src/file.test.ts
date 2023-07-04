@@ -1,4 +1,4 @@
-import { openFile } from "#package/file";
+import { openFile } from "./file.js";
 
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";

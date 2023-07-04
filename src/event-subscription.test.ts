@@ -1,4 +1,4 @@
-import { subscribe } from "#package/event-subscription";
+import { subscribe } from "./event-subscription.js";
 
 import assert from "node:assert/strict";
 import { EventEmitter } from "node:events";

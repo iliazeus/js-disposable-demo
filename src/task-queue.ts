@@ -4,6 +4,8 @@ import { EventEmitter, once } from "node:events";
 export type Task = () => Promise<void>;
 
 export class TaskQueue extends EventEmitter {
+  readonly resources = new AsyncDisposableStack();
+
   #concurrency: number;
   #tasks: Task[] = [];
   #runningTaskCount: number = 0;
@@ -38,7 +40,9 @@ export class TaskQueue extends EventEmitter {
 
   async [Symbol.asyncDispose](): Promise<void> {
     while (this.#tasks.length > 0 || this.#runningTaskCount > 0) {
-      await once(this, "taskFinished");
+      await once(this, "taskFinished").catch(() => { });
     }
+
+    await this.resources.disposeAsync();
   }
 }

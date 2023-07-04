@@ -1,4 +1,4 @@
-import { TaskQueue } from "#package/task-queue";
+import { TaskQueue } from "./task-queue.js";
 
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
