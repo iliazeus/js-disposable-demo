@@ -1,7 +1,3 @@
-import fetch from "node-fetch";
-
-import { pipeline } from "node:stream/promises";
-
 import { subscribe } from "./event-subscription.js";
 import { openFile } from "./file.js";
 import { Mutex } from "./mutex.js";
@@ -33,11 +29,7 @@ export async function fetchCat(
 
       {
         using outFileGuard = await outFileMutex.acquire();
-
-        await pipeline(
-          response.body!,
-          outFile.createWriteStream({ autoClose: false }),
-        );
+        await response.body?.pipeTo(outFile.writableWebStream());
       }
     });
   }
