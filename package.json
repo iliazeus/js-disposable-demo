@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "demo": "xargs npm start -- -o ./cat.html < ./urls.txt",
-    "start": "tsc && node ./dist/main.js",
+    "start": "tsc && node --max-old-space-size=8 ./dist/main.js",
     "test": "tsc && node --test ./dist"
   },
   "repository": {
