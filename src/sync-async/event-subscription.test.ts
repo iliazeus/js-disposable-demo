@@ -15,7 +15,7 @@ function subscribe(
 }
 
 describe("event-subscription", () => {
-  it("disposes at scope exit", () => {
+  it("is disposed at scope exit", () => {
     const expectedEvents = [1, 2, 3];
     const actualEvents: number[] = [];
 
