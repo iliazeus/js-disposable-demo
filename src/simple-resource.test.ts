@@ -1,5 +1,8 @@
 import "disposablestack/auto";
-import assert from "assert/strict";
+import "source-map-support/register";
+
+import assert from "node:assert/strict";
+import { describe, it } from "node:test";
 
 const openHandles = new Set<number>();
 

@@ -2,9 +2,11 @@ import "disposablestack/auto";
 import "cross-fetch/polyfill";
 import "source-map-support/register";
 
-import { once } from "events";
+import assert from "node:assert/strict";
+import { once } from "node:events";
+import { describe, it } from "node:test";
+
 import express from "express";
-import assert from "assert/strict";
 
 async function createServer(port: number, text: string): Promise<AsyncDisposable> {
   const app = express().use(express.json());
@@ -31,8 +33,8 @@ async function createTwoServers(port1: number, text1: string, port2: number, tex
 
 describe("two-servers", () => {
   it("works in simple case", async () => {
-    assert.rejects(() => fetch("http://localhost:3000"));
-    assert.rejects(() => fetch("http://localhost:3001"));
+    await assert.rejects(() => fetch("http://localhost:3000"));
+    await assert.rejects(() => fetch("http://localhost:3001"));
 
     {
       await using handle = await createTwoServers(3000, "foo", 3001, "bar");
@@ -48,25 +50,25 @@ describe("two-servers", () => {
       );
     }
 
-    assert.rejects(() => fetch("http://localhost:3000"));
-    assert.rejects(() => fetch("http://localhost:3001"));
+    await assert.rejects(() => fetch("http://localhost:3000"));
+    await assert.rejects(() => fetch("http://localhost:3001"));
   });
 
   it("throws on first error", async () => {
-    assert.rejects(async () => {
+    await assert.rejects(async () => {
       await using handle = await createTwoServers(-3000, "foo", 3001, "bar");
     });
 
-    assert.rejects(() => fetch("http://localhost:3000"));
-    assert.rejects(() => fetch("http://localhost:3001"));
+    await assert.rejects(() => fetch("http://localhost:3000"));
+    await assert.rejects(() => fetch("http://localhost:3001"));
   });
 
   it("throws on second error", async () => {
-    assert.rejects(async () => {
+    await assert.rejects(async () => {
       await using handle = await createTwoServers(3000, "foo", -3001, "bar");
     });
 
-    assert.rejects(() => fetch("http://localhost:3000"));
-    assert.rejects(() => fetch("http://localhost:3001"));
+    await assert.rejects(() => fetch("http://localhost:3000"));
+    await assert.rejects(() => fetch("http://localhost:3001"));
   });
 })
